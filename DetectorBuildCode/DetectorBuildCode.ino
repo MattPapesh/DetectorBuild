@@ -1,5 +1,5 @@
 int pin = A0;
-int LED_pins[] = {1, 2, 3};
+int LED_pins[] = {2, 3, 4};
 int LED_thresholds[] = {725, 1600, 2475};
 int LED_limits[] = {1600, 2475, 3000};
 
@@ -50,7 +50,7 @@ void setup() {
 void loop() {
   // Voltage is proportional to an analog scale from 0 - 1023, and the analog value read can be used to calculate the voltage drop across the probes when testing a solution.
   voltage_read = total_voltage * ((float)analogRead(pin)/675.18);
-
+ 
   // Calculate the resistance of the solution, as it is the variable resistor in the voltage divider.
   soln_resistance = ((float)voltage_read * fixed_resistance) / (total_voltage - voltage_read); 
   // Calculate conductance, the inverse of resistance, and convert it to micro seimens
@@ -58,6 +58,9 @@ void loop() {
   // Get the concentration of the solution.
   soln_concentration = getConcentration(soln_micro_conductance);
 
+  // Power LEDs based on the concentration of the solution
+  runLEDs(soln_concentration);
+  
   // Print the conductance and concentration to Serial:
   Serial.print("Resistance (ohms): "); Serial.println(soln_resistance);
   Serial.print("Conductance (micro G): "); Serial.println(soln_micro_conductance);
